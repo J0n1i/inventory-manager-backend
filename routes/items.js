@@ -14,14 +14,14 @@ router.get('/:id', async (req, res) => {
 });
 
 // create one item
-router.post('/', async(req, res) => {
+router.post('/', async (req, res) => {
     //test if item exists, if true, update quantity
     const item = await Item.findOne({ barcode: req.body.barcode });
     if (item) {
         try {
-        item.quantity += req.body.quantity;
-        item.save()
-            .then(() => res.json({ message: 'Item count updated' }))
+            item.quantity += req.body.quantity;
+            item.save()
+                .then(() => res.json({ message: 'Item count updated' }))
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -36,7 +36,7 @@ router.post('/', async(req, res) => {
             quantity: req.body.quantity
         });
         const newItem = await item.save();
-        res.status(201).json({ message: 'Item added', newItem});
+        res.status(201).json({ message: 'Item added', newItem });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -45,7 +45,28 @@ router.post('/', async(req, res) => {
 
 // update one item
 router.put('/:id', async (req, res) => {
+    const item = await Item.findById(req.params.id);
+    if (!item) {
+        return res.status(404).json({ message: 'Item not found' });
+    }
 
+
+    try {
+        item.name = req.body.name;
+        item.description = req.body.description;
+        item.barcode = req.body.barcode;
+        item.quantity = req.body.quantity;
+
+        item.save()
+
+
+
+
+        res.json({ message: 'Item updated', item });
+
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 });
 
 // delete one item
@@ -55,7 +76,7 @@ router.delete('/:id', async (req, res) => {
         if (!item) {
             return res.status(404).json({ message: 'Item not found' });
         }
-        
+
         item.deleteOne();
         res.json({ message: 'Item deleted' });
     } catch (error) {

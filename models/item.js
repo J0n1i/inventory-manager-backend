@@ -10,9 +10,7 @@ const itemSchema = new Schema({
     },
     description: {
         type: String,
-        required: true,
         trim: true,
-        minlength: 3
     },
     barcode: {
         type: String,
